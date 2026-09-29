@@ -1,0 +1,19 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Pagina nao encontrada"
+  description="A pagina solicitada nao foi encontrada. Volte para a pagina inicial da Aliance Vistorias."
+  currentPage="home"
+>
+  <section class="py-24">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-6xl font-bold text-white">404</h1>
+      <p class="text-gray-400 mt-4">Desculpe, a pagina que voce procura nao existe.</p>
+      <a href="/" class="inline-block mt-8 text-red-400 hover:text-red-300 underline">
+        Voltar para a pagina inicial
+      </a>
+    </div>
+  </section>
+</BaseLayout>

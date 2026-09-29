@@ -1,0 +1,117 @@
+---
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
+import TopBar from "@/components/layout/TopBar";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import "@/index.css";
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  currentPage: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  currentPage,
+  ogImage = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200"
+} = Astro.props;
+
+const siteName = "Aliance Vistorias";
+const fullTitle = `${title} | ${siteName}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const gaMeasurementId = "G-7NNZ01L27Y";
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "AutoRepair",
+  name: "Aliance Vistorias",
+  areaServed: "Pernambuco, Brasil",
+  telephone: ["+55-81-98879-1365", "+55-81-99822-5763"],
+  email: "vistoriasaliance@gmail.com",
+  openingHours: ["Mo-Fr 08:00-18:00", "Sa 08:00-12:00"],
+  url: canonicalUrl
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="author" content={siteName} />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#09090b" />
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+    <script define:vars={{ gaMeasurementId }} is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){window.dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag("js", new Date());
+      gtag("config", gaMeasurementId);
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const anchor = target.closest("a");
+        if (!anchor) return;
+
+        const href = anchor.getAttribute("href") || "";
+        const customEvent = anchor.getAttribute("data-track-event");
+
+        if (customEvent) {
+          gtag("event", customEvent, {
+            event_category: "engagement",
+            event_label: href || window.location.pathname
+          });
+        }
+
+        if (href.includes("wa.me")) {
+          gtag("event", "whatsapp_click", {
+            event_category: "contact",
+            event_label: href
+          });
+        }
+
+        const isExternal = href.startsWith("http") && !href.includes(window.location.host);
+        if (isExternal) {
+          gtag("event", "redirect_click", {
+            event_category: "navigation",
+            event_label: href
+          });
+        }
+      });
+    </script>
+  </head>
+  <body class="overflow-x-hidden">
+    <div class="min-h-screen bg-zinc-950 flex flex-col overflow-x-hidden">
+      <TopBar />
+      <Header currentPage={currentPage} client:load />
+      <main class="flex-1 pt-[6.5rem] md:pt-[7.5rem]">
+        <slot />
+      </main>
+      <Footer />
+      <WhatsAppButton client:load />
+    </div>
+  </body>
+</html>
